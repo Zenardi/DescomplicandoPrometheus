@@ -2,20 +2,21 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
-rule_files:
+rule_files: []
+
 scrape_configs:
   - job_name: "prometheus"
     static_configs:
       - targets: ["localhost:9090"]
 
-  - job_name: "Meu Primeiro Exporter"
+  - job_name: "python-exporter"
     static_configs:
-      - targets: ["localhost:8899"]
+      - targets: ["python-exporter:8899"]
   
-  - job_name: 'segundo-exporter'
+  - job_name: 'go-exporter'
     static_configs:
-      - targets: ['localhost:7788']
+      - targets: ['go-exporter:7788']
   
-  - job_name: 'node_exporter'
-	static_configs:
-	  - targets: ['localhost:9100']
+  # - job_name: 'node_exporter'
+  #   static_configs:
+  #     - targets: ['localhost:9100']
