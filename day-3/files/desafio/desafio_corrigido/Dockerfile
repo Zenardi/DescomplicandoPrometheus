@@ -12,4 +12,4 @@ LABEL description="Executando o nosso segundo exporter"
 COPY --from=buildando /app/segundo-exporter /app/segundo-exporter
 EXPOSE 7788
 WORKDIR /app
-CMD ["./segundo_exporter"]
+CMD ["./segundo-exporter"]
