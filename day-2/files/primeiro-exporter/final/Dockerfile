@@ -6,5 +6,5 @@ LABEL description="Dockerfile para criar o nosso primeiro exporter para o Promet
 COPY . /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt
-
-CMD python3 exporter.py
+#
+CMD [ "python3", "exporter.py" ]
