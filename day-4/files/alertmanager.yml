@@ -1,6 +1,6 @@
 global: # Inicio da seção global 
   resolve_timeout: 3m # Tempo de espera que o AlertManager aguarda para receber um update de um alerta do Prometheus, se não receber, ele considera que o alerta foi resolvido
-  slack_api_url: 'https://hooks.slack.com/services/xxxx/xxxx/xxxx' # URL do webhook do Slack
+  slack_api_url: '' # URL do webhook do Slack
 
 time_intervals: # Intervalos de tempo para serem usados nas rotas
   - name: workdays # Nome do intervalo de tempo
