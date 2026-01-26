@@ -1,0 +1,63 @@
+groups:
+  - name: node_exporter_alerts
+    rules:
+      # 1. Instância Offline
+      - alert: HostDown
+        expr: up{job="node_exporter"} == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Host {{ $labels.instance }} está offline"
+          description: "O alvo do Node Exporter caiu há mais de 3 minutos."
+
+      # 2. CPU: Uso alto (> 90%)
+      - alert: HostHighCpuLoad
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Uso de CPU alto no host {{ $labels.instance }}"
+          description: "A utilização da CPU está acima de 90% nos últimos 5 minutos."
+
+      # 3. Memória: Menos de 10% disponível
+      - alert: HostOutOfMemory
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Memória baixa no host {{ $labels.instance }}"
+          description: "O host tem menos de 10% de memória disponível."
+
+      # 4. Disco: Menos de 10% de espaço livre
+      # O filtro fstype exclui sistemas de arquivos virtuais para evitar falsos positivos
+      - alert: HostDiskSpaceLow
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"} / node_filesystem_size_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"} * 100) < 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disco quase cheio no host {{ $labels.instance }}"
+          description: "O sistema de arquivos {{ $labels.mountpoint }} tem menos de 10% de espaço livre."
+
+      # 5. Disco: Previsão de enchimento em 4 horas
+      - alert: HostDiskWillFillIn4Hours
+        expr: predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"}[1h], 4 * 3600) < 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disco encherá em breve no host {{ $labels.instance }}"
+          description: "Baseado na tendência da última hora, o disco {{ $labels.mountpoint }} ficará sem espaço nas próximas 4 horas."
+
+      # 6. Rede: Alta taxa de erros (Rx ou Tx)
+      - alert: HostNetworkErrors
+        expr: rate(node_network_receive_errs_total[5m]) > 0 or rate(node_network_transmit_errs_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Erros de rede no host {{ $labels.instance }}"
+          description: "Detectada taxa de erros na interface de rede nos últimos 5 minutos."

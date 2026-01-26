@@ -1,0 +1,46 @@
+global:
+  resolve_timeout: 3m
+
+time_intervals: # Intervalos de tempo para serem usados nas rotas
+  - name: workdays # Nome do intervalo de tempo
+    time_intervals: # Intervalos de tempo
+      - weekdays: ['monday:friday'] # Dias da semana que o intervalo de tempo estará ativo
+  - name: workhours # Nome do intervalo de tempo
+    time_intervals: # Intervalos de tempo
+      - times: # Horários que o intervalo de tempo estará ativo 
+        - start_time: 09:00 # Horário de início
+          end_time: 18:00 # Horário de fim
+
+route:
+  # Agrupa alertas pelo nome (ex: todos os "HostDown" vêm juntos em uma msg)
+  group_by: ['alertname']
+  
+  # Espera 30s antes de mandar o primeiro alerta para ver se outros similares aparecem
+  group_wait: 30s
+  
+  # Se novos alertas do mesmo grupo aparecerem, espera 5m antes de mandar atualização
+  group_interval: 5m
+  
+  # Se o problema persistir, reenvia a notificação a cada 4 horas
+  repeat_interval: 1h
+  
+  # Destino padrão
+  receiver: 'discord-webhook'
+
+receivers:
+  - name: 'discord-webhook'
+    discord_configs:
+      - webhook_url: '__DISCORD_WEBHOOK_URL__'
+        
+        # Título dinâmico: Muda ícone e status (FIRING vs RESOLVED)
+        title: '{{ if eq .Status "firing" }}🔥{{ else }}✅{{ end }} [{{ .Status | toUpper }}] {{ .GroupLabels.alertname }}'
+        
+        # Mensagem formatada
+        message: >-
+          **Severidade:** {{ .CommonLabels.severity | toUpper }}
+          
+          **Resumo:** {{ .CommonAnnotations.summary }}
+          
+          **Detalhes:** {{ .CommonAnnotations.description }}
+          
+          **Atingido:** {{ range .Alerts }}`{{ .Labels.instance }}` {{ end }}
