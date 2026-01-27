@@ -4,6 +4,14 @@
 
 ### O que iremos ver hoje?
 
+Durante o dia de hoje iremos aprender como tornar o nosso monitoramento proativo com a criação e gerenciamento de Alertas!
+
+Hoje é dia de colocar a mão na massa e configurar o nosso querido e lindo Prometheus para nos avisar quando algo estiver errado. Iremos aprender a criar regras de alertas essenciais, monitorando desde a disponibilidade das instâncias até métricas de infraestrutura como CPU, Memória e Disco utilizando o Node Exporter.
+
+Além disso, iremos entender o papel fundamental do sensacional [AlertManager](https://prometheus.io/docs/alerting/latest/alertmanager/)! Vamos descobrir como ele funciona como um "gerente de tráfego" para nossos alertas, cuidando da desduplicação, agrupamento e roteamento das notificações.
+
+E ainda de quebra você vai aprender como integrar o AlertManager com o Discord! Sim, você vai configurar o envio de notificações personalizadas diretamente para o seu canal do Discord, garantindo que você saiba exatamente o que está acontecendo na sua infraestrutura em tempo real!
+
 <details>
 <summary class="summary">DAY-5</summary>
 
